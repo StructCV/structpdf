@@ -1,6 +1,6 @@
 {
     "name": "@structcv/structpdf",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A professional library for embedding and extracting JSON data in PDF files with compression, integrity checking, and validation",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

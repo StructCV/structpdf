@@ -13,6 +13,8 @@ export interface StructPDFPayload {
   schema: string;
   payload: JSONValue; // Valid JSON data (generic)
   metadata?: PayloadMetadata;
+  specName?: string; // Human-readable specification name (e.g., "StructCV Resume Format")
+  specID?: string; // Technical specification identifier (e.g., "STRUCTCV")
 }
 
 import { HashAlgorithm } from '../core/constants';
@@ -34,6 +36,8 @@ export interface InjectionOptions {
   overwrite?: boolean;
   domain?: string; // Domain for the payload (e.g., "RESUME", "INVOICE", "CONTRACT")
   schemaUrl: string; // Schema URL (required for documentation and interoperability)
+  specName?: string; // Human-readable specification name (e.g., "StructCV Resume Format")
+  specID?: string; // Technical specification identifier (e.g., "STRUCTCV")
 }
 
 export interface ExtractionOptions {

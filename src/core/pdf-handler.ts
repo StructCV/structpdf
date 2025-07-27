@@ -24,6 +24,47 @@ export class PDFHandler {
   }
 
   /**
+   * Add StructPDF-specific metadata to PDF for fast detection
+   */
+  addStructPDFMetadata(domain: string, specID?: string, specName?: string): void {
+    // Set creator to StructPDF if not already set
+    const creator = this.pdfDoc.getCreator();
+    if (!creator) {
+      this.pdfDoc.setCreator(STRUCTPDF_CONSTANTS.GENERATOR);
+    }
+    
+    // Get existing keywords
+    const existingKeywords = this.pdfDoc.getKeywords();
+    const newKeywords: string[] = [];
+    
+    // Add StructPDF indicator
+    newKeywords.push('StructPDF:true');
+    newKeywords.push(`StructPDF-Domain:${domain}`);
+    
+    // Add optional spec information
+    if (specID) {
+      newKeywords.push(`StructPDF-SpecID:${specID}`);
+    }
+    if (specName) {
+      newKeywords.push(`StructPDF-SpecName:${specName}`);
+    }
+    
+    // Merge with existing keywords
+    const updatedKeywords = existingKeywords ? [...existingKeywords, ...newKeywords] : newKeywords;
+    this.pdfDoc.setKeywords(updatedKeywords);
+  }
+
+  /**
+   * Check if PDF has StructPDF metadata for fast detection
+   */
+  hasStructPDFMetadata(): boolean {
+    const keywords = this.pdfDoc.getKeywords();
+    if (!keywords) return false;
+    
+    return keywords.split(' ').some((keyword: string) => keyword.startsWith('StructPDF:true'));
+  }
+
+  /**
    * Get embedded files from PDF
    */
   getEmbeddedFiles(): Map<string, Uint8Array> {

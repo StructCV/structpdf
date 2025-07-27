@@ -82,10 +82,8 @@ export class StructPDFInjector {
         STRUCTPDF_CONSTANTS.MIME_TYPE
       );
 
-      // Add metadata
-      handler.addMetadata(PDF_METADATA_KEYS.HAS_STRUCTPDF, 'true');
-      handler.addMetadata(PDF_METADATA_KEYS.STRUCTPDF_VERSION, this.extractVersion(data));
-      handler.addMetadata(PDF_METADATA_KEYS.STRUCTPDF_DOMAIN, payload.domain);
+      // Add StructPDF metadata for fast detection
+      handler.addStructPDFMetadata(payload.domain, payload.specID, payload.specName);
 
       // Save PDF
       const modifiedPdfBytes = await pdfDoc.save();
@@ -138,6 +136,16 @@ export class StructPDFInjector {
     if (options.domain && typeof options.domain !== 'string') {
       throw new ValidationError('Domain must be a string');
     }
+
+    // Validate specName
+    if (options.specName && typeof options.specName !== 'string') {
+      throw new ValidationError('specName must be a string');
+    }
+
+    // Validate specID
+    if (options.specID && typeof options.specID !== 'string') {
+      throw new ValidationError('specID must be a string');
+    }
   }
 
   /**
@@ -181,7 +189,9 @@ export class StructPDFInjector {
       version: this.extractVersion(data),
       schema: schemaUrl,
       payload: data,
-      metadata
+      metadata,
+      ...(options.specName && { specName: options.specName }),
+      ...(options.specID && { specID: options.specID })
     };
   }
 

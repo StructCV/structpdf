@@ -163,12 +163,20 @@ export class StructPDFExtractor {
 
   /**
    * Quick check if PDF has StructPDF data
+   * Uses fast metadata check first, then falls back to embedded files check for compatibility
    */
   async hasStructPDFData(pdfPath: string): Promise<boolean> {
     try {
       const pdfBytes = await fs.readFile(pdfPath);
       const pdfDoc = await PDFDocument.load(pdfBytes);
       const handler = new PDFHandler(pdfDoc);
+      
+      // First, try fast metadata check
+      if (handler.hasStructPDFMetadata()) {
+        return true;
+      }
+      
+      // Fallback to embedded files check for older PDFs without metadata
       return handler.hasStructPDFData();
     } catch {
       return false;
